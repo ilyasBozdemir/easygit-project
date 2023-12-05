@@ -1,0 +1,17 @@
+D:\Github\EasyGit-Copy\EasyGit-Copy\bin\Debug\net7.0-windows\EasyGit-Copy.exe
+D:\Github\EasyGit-Copy\EasyGit-Copy\bin\Debug\net7.0-windows\EasyGit-Copy.deps.json
+D:\Github\EasyGit-Copy\EasyGit-Copy\bin\Debug\net7.0-windows\EasyGit-Copy.runtimeconfig.json
+D:\Github\EasyGit-Copy\EasyGit-Copy\bin\Debug\net7.0-windows\EasyGit-Copy.dll
+D:\Github\EasyGit-Copy\EasyGit-Copy\bin\Debug\net7.0-windows\EasyGit-Copy.pdb
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.csproj.AssemblyReference.cache
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit_Copy.Form1.resources
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.csproj.GenerateResource.cache
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.GeneratedMSBuildEditorConfig.editorconfig
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.AssemblyInfoInputs.cache
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.AssemblyInfo.cs
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.csproj.CoreCompileInputs.cache
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.dll
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\refint\EasyGit-Copy.dll
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.pdb
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\EasyGit-Copy.genruntimeconfig.cache
+D:\Github\EasyGit-Copy\EasyGit-Copy\obj\Debug\net7.0-windows\ref\EasyGit-Copy.dll
