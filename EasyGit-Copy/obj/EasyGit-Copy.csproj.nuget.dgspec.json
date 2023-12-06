@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Github\\EasyGit-Copy\\EasyGit-Copy\\EasyGit-Copy.csproj": {}
+    "D:\\Github\\easygit-project\\EasyGit-Copy\\EasyGit-Copy.csproj": {}
   },
   "projects": {
-    "D:\\Github\\EasyGit-Copy\\EasyGit-Copy\\EasyGit-Copy.csproj": {
+    "D:\\Github\\easygit-project\\EasyGit-Copy\\EasyGit-Copy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Github\\EasyGit-Copy\\EasyGit-Copy\\EasyGit-Copy.csproj",
+        "projectUniqueName": "D:\\Github\\easygit-project\\EasyGit-Copy\\EasyGit-Copy.csproj",
         "projectName": "EasyGit-Copy",
-        "projectPath": "D:\\Github\\EasyGit-Copy\\EasyGit-Copy\\EasyGit-Copy.csproj",
+        "projectPath": "D:\\Github\\easygit-project\\EasyGit-Copy\\EasyGit-Copy.csproj",
         "packagesPath": "C:\\Users\\ilyas bozdemir\\.nuget\\packages\\",
-        "outputPath": "D:\\Github\\EasyGit-Copy\\EasyGit-Copy\\obj\\",
+        "outputPath": "D:\\Github\\easygit-project\\EasyGit-Copy\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

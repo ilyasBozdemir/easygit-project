@@ -10,18 +10,20 @@ namespace EasyGit_Copy
         }
 
         string repoUrl = "",
-            destinationPath = "",
             rootLocationPath = "",
             projectName = "",
             ghUsername = "";
 
         private void btnCopyProject_Click(object sender, EventArgs e)
         {
-            var gitHubOperations = new GitHubOperations(destinationPath, rootLocationPath, repoUrl, projectName);
+            var gitHubOperations = new GitHubOperations(new GitHubOperationsProps()
+            {
+                ProjectName = projectName,
+                RepoUrl = repoUrl,
+                RootLocationPath = rootLocationPath,
+            });
             gitHubOperations.LogOutput += OnLogOutput;
-            gitHubOperations.PerformGitHubOperations();
-
-
+            gitHubOperations.PerformGitHubOperationsAsync();
         }
 
         private void OnLogOutput(string log)
@@ -49,7 +51,6 @@ namespace EasyGit_Copy
         {
             projectPath.Text = "Proje Konumu: ";
             projectPath.Text = Path.Combine(txtLocation.Text, projectName);
-            destinationPath = Path.Combine(txtLocation.Text, projectName);
             rootLocationPath = txtLocation.Text;
         }
 
@@ -58,7 +59,6 @@ namespace EasyGit_Copy
             projectName = Slug.GenerateSlug(txtProjectName.Text);
             projectPath.Text = "Proje Konumu: ";
             projectPath.Text += Path.Combine(txtLocation.Text, projectName);
-            destinationPath = Path.Combine(txtLocation.Text, projectName);
 
         }
 
@@ -77,7 +77,11 @@ namespace EasyGit_Copy
             }
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
 
+            Control.CheckForIllegalCrossThreadCalls = false;
+        }
     }
 }
 

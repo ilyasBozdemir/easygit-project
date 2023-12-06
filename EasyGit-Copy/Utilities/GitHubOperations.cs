@@ -1,107 +1,144 @@
 ﻿using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace EasyGit_Copy.Utilities
 {
     public class GitHubOperations
     {
-        public GitHubOperations(string destinationPath,string rootLocationPath, string repoUrl, string projectName)
+        public GitHubOperations(GitHubOperationsProps gitHubOperationsProps)
         {
-            this.DestinationPath = destinationPath;
-            this.RepoUrl = repoUrl;
-            this.RootLocationPath = rootLocationPath;
-            this.ProjectName = projectName;
+            GitHubOperationsProps = gitHubOperationsProps;
         }
-        public string DestinationPath { get; set; }
-        public string RootLocationPath { get; set; }
-        
-        public string RepoUrl { get; set; }
-        public string ProjectName { get; set; }
+
+
+        public GitHubOperationsProps GitHubOperationsProps { get; set; }
 
         public event Action<string> LogOutput;
 
 
-        public void PerformGitHubOperations()
-        {
-           // var tempDirectoryPathInfo = CreateDirectory(DestinationPath);
 
-            //DeleteDirectory(tempDirectoryPathInfo);
-        }
-
-
-        private void DeleteDirectory(DirectoryInfo directoryInfo)
+        private (string Owner, string Repo) GetGitHubRepoInfo(string repoUrl)
         {
-            if (directoryInfo.Exists)
-                directoryInfo.Delete(true);
-        }
-
-        private DirectoryInfo CreateDirectory(string directoryName)
-        {
-           return Directory.CreateDirectory(directoryName);
-        }
-
-        private void CreateDirectoryWithCmd(string directoryName,string workingDir)
-        {
-            RunCmdCommand($"mkdir {directoryName}",workingDir);
-        }
-
-        private void CloneRepository(string repoUrl, string workingDir)
-        {
-            RunCmdCommand($"git clone {repoUrl}",  workingDir);
-        }
-        private void RunCmdCommand(string command,string workingDir)
-        {
-            Process process = new Process();
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            Uri uri;
+            if (Uri.TryCreate(repoUrl, UriKind.Absolute, out uri))
             {
-                FileName = "cmd.exe",
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                UseShellExecute = false, // UseShellExecute'yi false olarak ayarla
-                Verb = "runas",
-                CreateNoWindow = true,
-                WorkingDirectory = workingDir
+                string[] segments = uri.Segments;
+                if (segments.Length >= 2)
+                {
+                    string owner = segments[1].Trim('/');
+                    string repo = segments[2].Trim('/');
+
+                    return (owner, repo);
+                }
+            }
+
+            return (null, null);
+        }
+
+
+
+        public async void PerformGitHubOperationsAsync()
+        {
+            var (owner, repo) = GetGitHubRepoInfo(GitHubOperationsProps.RepoUrl);
+
+            List<string> commands = new List<string>
+            {
+                $"mkdir {GitHubOperationsProps.ProjectName}",
+                $"cd {GitHubOperationsProps.ProjectName}",
+                $"git clone {GitHubOperationsProps.RepoUrl}",
             };
 
-            process.StartInfo = startInfo;
-            process.Start();
 
-            // CMD'ye komutu yaz
-            process.StandardInput.WriteLine(command);
-            process.StandardInput.WriteLine(command);
-            process.StandardInput.Flush();
-            process.StandardInput.Close();
+            await RunCmdCommand(commands, GitHubOperationsProps.RootLocationPath);
 
-            // Çıktıları oku
-            string output = process.StandardOutput.ReadToEnd();
-       
-            string error = process.StandardError.ReadToEnd();
 
-            // Çalışmayı bekle
-            process.WaitForExit();
+            string packageJsonPath = Path.Combine(GitHubOperationsProps.RootLocationPath, GitHubOperationsProps.ProjectName, repo, "package.json");
+            EditPackageName(packageJsonPath, GitHubOperationsProps.ProjectName, repo);
 
-            // Event'i tetikle, ana formdaki ListBox'a çıktıyı eklemek için
-            LogOutput?.Invoke($"\n{output}\n\n{error}");
+            // Repo dizinine geçiş yaptıktan sonra repo oluştur ve push yap
+            string createRepoCommand = $"gh repo create {GitHubOperationsProps.ProjectName} --public";
+            string pushCommand = $"git remote add origin https://github.com/{owner}/{GitHubOperationsProps.ProjectName}.git && git push -u origin main";
+
+            List<string> repoCommands = new List<string>
+            {
+                $"cd {GitHubOperationsProps.ProjectName}", // Repo dizinine geç
+                createRepoCommand,
+                pushCommand
+            };
+
+            await RunCmdCommand(repoCommands, GitHubOperationsProps.RootLocationPath);
 
         }
 
-        private void CopyDirectory(string sourcePath, string destinationPath)
+        private void EditPackageName(string packageJsonPath, string newPackageName, string oldProjectName)
         {
-            if (!Directory.Exists(DestinationPath))
-            {
-                Directory.CreateDirectory(DestinationPath);
-            }
 
-            foreach (string dirPath in Directory.GetDirectories(sourcePath, "*", SearchOption.AllDirectories))
-            {
-                Directory.CreateDirectory(dirPath.Replace(sourcePath, destinationPath));
-            }
+            string packageJsonContent = File.ReadAllText(packageJsonPath);
 
-            foreach (string newPath in Directory.GetFiles(sourcePath, "*.*", SearchOption.AllDirectories))
-            {
-                File.Copy(newPath, newPath.Replace(sourcePath, destinationPath), true);
-            }
+            string modifiedPackageJsonContent = packageJsonContent.Replace($"\"name\": \"{oldProjectName}\"", $"\"name\": \"{newPackageName}\"");
+
+            File.WriteAllText(packageJsonPath, modifiedPackageJsonContent);
         }
+
+        private async Task RunCmdCommand(List<string> commands, string workingDir)
+        {
+            try
+            {
+
+                if (commands.Count == 0)
+                {
+                    Console.WriteLine("No commands to run.");
+                    return;
+                }
+
+                await Task.Run(() =>
+                {
+                    Process process = new Process();
+                    ProcessStartInfo startInfo = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        RedirectStandardInput = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        Verb = "runas",
+                        CreateNoWindow = true,
+                        WorkingDirectory = workingDir
+                    };
+
+                    process.StartInfo = startInfo;
+                    process.Start();
+
+                    foreach (var command in commands)
+                    {
+                        process.StandardInput.WriteLine(command);
+                    }
+
+                    process.StandardInput.Flush();
+                    process.StandardInput.Close();
+
+
+                    // Çıktıları oku
+                    string output = process.StandardOutput.ReadToEnd();
+                    string error = process.StandardError.ReadToEnd();
+
+                    // Çalışmayı bekle
+                    process.WaitForExit();
+
+                    // Event'i tetikle, ana formdaki ListBox'a çıktıyı eklemek için
+                    LogOutput?.Invoke($"\n{output}\n\n{error}");
+                });
+
+
+
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
+
+        }
+
 
     }
 }
